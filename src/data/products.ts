@@ -7,23 +7,24 @@ import { Product } from './types';
 export const products: Product[] = [
   {
     id: 'prod-001',
-    title: 'Asymmetric Technical Jacket',
+    title: 'Starborn Hoodie',
     category: 'apparel',
     description:
-      'Deconstructed outerwear featuring modular components and adaptive ventilation systems. Precision-cut panels with hidden magnetic closures.',
-    year: 2026,
+      'A hand-crafted hoodie featuring chaotic hand screen printing. Each piece is unique with intricate designs and bold graphics.',
+    year: 2025,
     images: {
-      primary: '/images/products/placeholder.jpg',
+      primary: '/images/products/iron cross.png',
       gallery: [
-        '/images/products/placeholder.jpg',
-        '/images/products/placeholder.jpg',
+        '/images/products/ic 1.png',
+        '/images/products/ic2.png',
+        '/images/products/ic3.png',
       ],
     },
     specs: {
-      materials: ['Recycled nylon', 'Gore-tex membrane', 'YKK zippers'],
-      colors: ['Obsidian', 'Lunar grey'],
+      materials: ['Cotton', 'Hand screen-printed graphics'],
+      colors: ['Black'],
     },
-    tags: ['technical', 'modular', 'sustainable'],
+    tags: ['handcrafted', 'limited', 'screen-print', 'chaotic'],
     featured: true,
   },
   {
