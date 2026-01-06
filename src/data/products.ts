@@ -34,8 +34,11 @@ export const products: Product[] = [
       'Concept collaboration piece featuring stylized Blue-Eyes Dragon graphics and OTS branding. Light denim construction with bold white screen-printed design and customDTG print across the back. hand made in Japan',
     year: 2025,
     images: {
-      primary: '/images/products/yu-gi-oh-ark-jacket.png', // ygo.png for gallery
-      gallery: ['/images/products/yu-gi-oh-ark-jacket-detail.png'], // ots.png for modal
+      primary: '/images/products/ygo.png', // ygo.png for gallery preview
+      gallery: [
+        '/images/products/yu-gi-oh-ark-jacket-detail.png',
+        '/images/products/yu-gi-oh-ark-jacket.png',
+      ], // detail and jacket images for modal
     },
     specs: {
       materials: ['Denim', 'Screen-printed/ DTG printed graphics'],
