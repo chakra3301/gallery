@@ -126,6 +126,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                       fill
                       sizes="100vw"
                       className="object-contain"
+                      unoptimized={true}
                     />
                   </motion.div>
                 </AnimatePresence>

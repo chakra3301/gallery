@@ -23,6 +23,7 @@ export const Hero: React.FC = () => {
             className="object-contain"
             priority
             sizes="100vw"
+            unoptimized={true}
             onError={(e) => {
               console.error('Hero image failed to load:', e);
             }}

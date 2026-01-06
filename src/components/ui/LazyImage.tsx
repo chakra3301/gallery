@@ -34,7 +34,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
           setError(true);
           setIsLoading(false);
         }}
-        unoptimized={process.env.NODE_ENV === 'development'}
+        unoptimized={true}
         {...props}
       />
       {isLoading && (
