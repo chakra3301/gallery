@@ -38,8 +38,9 @@ export const products: Product[] = [
       primary: '/images/products/ygo.png', // ygo.png for gallery preview
       gallery: [
         '/images/products/yu-gi-oh-ark-jacket-detail.png',
+        '/images/products/yugi back.png',
         '/images/products/yu-gi-oh-ark-jacket.png',
-      ], // detail and jacket images for modal
+      ], // detail, back view, and jacket images for modal
     },
     specs: {
       materials: ['Denim', 'Screen-printed/ DTG printed graphics'],
