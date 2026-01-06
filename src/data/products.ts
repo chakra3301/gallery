@@ -70,23 +70,23 @@ export const products: Product[] = [
   },
   {
     id: 'prod-004',
-    title: 'Modular Footwear System',
-    category: 'footwear',
+    title: 'Arkturus',
+    category: 'apparel',
     description:
-      'Interchangeable sole platform with magnetic upper attachment. Three upper styles included: technical mesh, canvas, and treated leather.',
-    year: 2026,
+      'A collection of 50 t-shirts made to be earned by creative minds whose aura represented that of a soul bond for divinity around the world.',
+    year: 2025,
     images: {
-      primary: '/images/products/placeholder.jpg',
+      primary: '/images/products/arkturus.png',
       gallery: [
-        '/images/products/placeholder.jpg',
-        '/images/products/placeholder.jpg',
+        '/images/products/turus back.png',
+        '/images/products/turus f.png',
       ],
     },
     specs: {
-      materials: ['TPU sole', 'Cordura mesh', 'Full-grain leather'],
-      colors: ['Core system (universal)', 'Uppers vary'],
+      materials: ['Cotton', 'Screen-printed graphics'],
+      colors: ['Black'],
     },
-    tags: ['innovative', 'modular', 'versatile'],
+    tags: ['limited', 'divine', 'creative', 'soul-bond'],
     featured: true,
   },
   {
