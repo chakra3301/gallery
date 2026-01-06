@@ -28,12 +28,13 @@ export const LazyImage: React.FC<LazyImageProps> = ({
           isLoading ? 'blur-sm scale-105 opacity-0' : 'blur-0 scale-100 opacity-100',
           className
         )}
-        style={{ objectFit: 'cover' }}
         onLoad={() => setIsLoading(false)}
-        onError={() => {
+        onError={(e) => {
+          console.error('Image load error:', src, e);
           setError(true);
           setIsLoading(false);
         }}
+        unoptimized={process.env.NODE_ENV === 'development'}
         {...props}
       />
       {isLoading && (
