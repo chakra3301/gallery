@@ -94,7 +94,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   }, [isOpen]);
 
   // Don't render if no image available
-  if (!currentImage || !isOpen) {
+  if (!currentImage) {
     return null;
   }
 
