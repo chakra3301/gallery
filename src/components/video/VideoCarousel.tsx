@@ -15,27 +15,36 @@ const videos = [
 export const VideoCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoSize, setVideoSize] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    // Reset aspect ratio when video changes
+    setAspectRatio(null);
+
     const updateSize = () => {
       if (video.videoWidth && video.videoHeight) {
-        setVideoSize({
-          width: video.videoWidth,
-          height: video.videoHeight,
-        });
+        const ratio = video.videoWidth / video.videoHeight;
+        setAspectRatio(ratio);
       }
     };
 
+    // Try to get dimensions immediately if already loaded
+    if (video.readyState >= 1) {
+      updateSize();
+    }
+
     video.addEventListener('loadedmetadata', updateSize);
     video.addEventListener('loadeddata', updateSize);
+    video.addEventListener('canplay', updateSize);
 
     return () => {
       video.removeEventListener('loadedmetadata', updateSize);
       video.removeEventListener('loadeddata', updateSize);
+      video.removeEventListener('canplay', updateSize);
     };
   }, [currentIndex]);
 
@@ -46,10 +55,6 @@ export const VideoCarousel: React.FC = () => {
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + videos.length) % videos.length);
   };
-
-  const aspectRatio = videoSize.width && videoSize.height 
-    ? videoSize.width / videoSize.height 
-    : 16 / 9; // Default aspect ratio
 
   return (
     <section id="video" className="py-24 px-6 bg-white">
@@ -70,13 +75,17 @@ export const VideoCarousel: React.FC = () => {
           </h2>
 
           {/* Video Carousel */}
-          <div className="relative w-full bg-off-white flex items-center justify-center">
+          <div className="relative w-full bg-off-white flex items-center justify-center min-h-[300px]">
             <div 
+              ref={containerRef}
               className="relative w-full mx-auto"
               style={{ 
-                aspectRatio: aspectRatio,
+                aspectRatio: aspectRatio ? `${aspectRatio}` : undefined,
                 maxWidth: '100%',
-                maxHeight: '80vh'
+                maxHeight: aspectRatio ? '80vh' : undefined,
+                display: aspectRatio ? 'block' : 'flex',
+                alignItems: aspectRatio ? undefined : 'center',
+                justifyContent: aspectRatio ? undefined : 'center'
               }}
             >
               <AnimatePresence mode="wait">
@@ -86,14 +95,16 @@ export const VideoCarousel: React.FC = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className={aspectRatio ? "absolute inset-0" : "w-full"}
+                  style={aspectRatio ? {} : { maxWidth: '100%', maxHeight: '80vh' }}
                 >
                   <video
                     ref={videoRef}
                     src={videos[currentIndex]}
                     controls
-                    className="w-full h-full"
+                    className={aspectRatio ? "w-full h-full" : "w-full h-auto max-h-[80vh]"}
                     playsInline
+                    preload="metadata"
                   >
                     Your browser does not support the video tag.
                   </video>
