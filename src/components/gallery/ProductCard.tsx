@@ -12,14 +12,6 @@ interface ProductCardProps {
   onClick: () => void;
 }
 
-// Aspect ratios based on size
-const aspectRatios = {
-  small: 'aspect-square',
-  medium: 'aspect-[4/5]',
-  large: 'aspect-[21/9]',
-  featured: 'aspect-square',
-};
-
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   size,
@@ -30,24 +22,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onClick={onClick}
-      className={cn(
-        'relative overflow-hidden cursor-pointer group bg-off-white',
-        aspectRatios[size]
-      )}
+      className="relative overflow-hidden cursor-pointer group bg-off-white w-full"
     >
-      {/* Product Image */}
-      <div className="absolute inset-0 w-full h-full">
+      {/* Product Image - container fits to image */}
+      <div className="relative w-full flex items-center justify-center">
         <motion.div
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full h-full"
+          className="w-full"
         >
           <LazyImage
             src={product.images.primary}
             alt={product.title}
-            fill
+            width={1200}
+            height={1200}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-contain"
+            className="w-full h-auto object-contain"
+            unoptimized={true}
           />
         </motion.div>
       </div>

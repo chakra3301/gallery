@@ -18,8 +18,14 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // If className includes h-auto or specific sizing, don't wrap in full-height container
+  const hasAutoHeight = className?.includes('h-auto');
+  
   return (
-    <div className="relative w-full h-full overflow-hidden bg-off-white">
+    <div className={cn(
+      "relative overflow-hidden bg-off-white",
+      hasAutoHeight ? "w-full" : "w-full h-full"
+    )}>
       <Image
         src={error ? fallback : src}
         alt={alt}

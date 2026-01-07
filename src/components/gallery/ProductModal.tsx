@@ -120,7 +120,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           >
             <div className="w-full h-full max-w-7xl mx-auto flex flex-col lg:flex-row bg-white">
               {/* Image Section - Fullscreen */}
-              <div className="relative flex-1 bg-off-white">
+              <div className="relative flex-1 bg-off-white flex items-center justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentImage}
@@ -128,13 +128,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0"
+                    className="w-full h-full flex items-center justify-center p-6"
                   >
                     {currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4') ? (
                       <video
                         src={currentImage}
                         controls
-                        className="w-full h-full object-contain"
+                        className="max-w-full max-h-full w-auto h-auto object-contain"
                         playsInline
                       >
                         Your browser does not support the video tag.
@@ -143,9 +143,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                       <LazyImage
                         src={currentImage}
                         alt={`${product.title} - Image ${currentImageIndex + 1}`}
-                        fill
+                        width={2000}
+                        height={2000}
                         sizes="100vw"
-                        className="object-contain"
+                        className="max-w-full max-h-full w-auto h-auto object-contain"
                         unoptimized={true}
                       />
                     )}

@@ -113,8 +113,6 @@ export const products: Product[] = [
       gallery: [
         '/images/products/star/47051f19-6bb5-416a-9fe6-4214d66a688e.JPG',
         '/images/products/star/69657CC2-BBE9-48C9-8521-19ECD2026891.JPG',
-        '/images/products/star/IMG_0098.JPG',
-        '/images/products/star/IMG_0099.JPG',
         '/images/products/star/IMG_0102.JPG',
         '/images/products/star/IMG_9246.PNG',
         '/images/products/star/IMG_9247.PNG',
@@ -123,7 +121,6 @@ export const products: Product[] = [
         '/images/products/star/IMG_9250.PNG',
         '/images/products/star/IMG_9251.PNG',
         '/images/products/star/copy_CD450EC2-7D5F-45DB-B914-144A1B7D0310.MOV',
-        '/images/products/star/copy_ED4FCC3B-BBAE-4E95-8B30-2A09FDD211FE.mov',
         '/images/products/star/copy_ED7CA329-D822-445A-8C96-6378808BB9C6.MOV',
         '/images/products/star/copy_FF10298E-4BC2-4111-BEA0-7A4374296FE2.MOV',
       ],
