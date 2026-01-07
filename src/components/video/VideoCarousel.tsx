@@ -75,17 +75,14 @@ export const VideoCarousel: React.FC = () => {
           </h2>
 
           {/* Video Carousel */}
-          <div className="relative w-full bg-off-white flex items-center justify-center min-h-[300px]">
+          <div className="relative w-full bg-off-white flex items-center justify-center py-8">
             <div 
               ref={containerRef}
-              className="relative w-full mx-auto"
+              className="relative inline-block max-w-full"
               style={{ 
+                width: aspectRatio ? '100%' : 'auto',
                 aspectRatio: aspectRatio ? `${aspectRatio}` : undefined,
-                maxWidth: '100%',
-                maxHeight: aspectRatio ? '80vh' : undefined,
-                display: aspectRatio ? 'block' : 'flex',
-                alignItems: aspectRatio ? undefined : 'center',
-                justifyContent: aspectRatio ? undefined : 'center'
+                maxHeight: '80vh'
               }}
             >
               <AnimatePresence mode="wait">
@@ -95,16 +92,26 @@ export const VideoCarousel: React.FC = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={aspectRatio ? "absolute inset-0" : "w-full"}
-                  style={aspectRatio ? {} : { maxWidth: '100%', maxHeight: '80vh' }}
+                  className="relative"
+                  style={{
+                    width: aspectRatio ? '100%' : 'auto',
+                    height: aspectRatio ? 'auto' : 'auto',
+                    display: 'block'
+                  }}
                 >
                   <video
                     ref={videoRef}
                     src={videos[currentIndex]}
                     controls
-                    className={aspectRatio ? "w-full h-full" : "w-full h-auto max-h-[80vh]"}
+                    className="w-full h-auto max-w-full max-h-[80vh]"
                     playsInline
                     preload="metadata"
+                    style={{
+                      display: 'block',
+                      width: aspectRatio ? '100%' : 'auto',
+                      height: aspectRatio ? 'auto' : 'auto',
+                      maxHeight: '80vh'
+                    }}
                   >
                     Your browser does not support the video tag.
                   </video>
