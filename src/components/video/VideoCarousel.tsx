@@ -14,9 +14,13 @@ const videos = [
 
 export const VideoCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -24,12 +28,29 @@ export const VideoCarousel: React.FC = () => {
 
     // Reset aspect ratio when video changes
     setAspectRatio(null);
+    setIsPlaying(false);
+    setShowPlayButton(true);
 
     const updateSize = () => {
       if (video.videoWidth && video.videoHeight) {
         const ratio = video.videoWidth / video.videoHeight;
         setAspectRatio(ratio);
       }
+    };
+
+    const handlePlay = () => {
+      setIsPlaying(true);
+      setShowPlayButton(false);
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+      setShowPlayButton(true);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setShowPlayButton(true);
     };
 
     // Try to get dimensions immediately if already loaded
@@ -40,13 +61,58 @@ export const VideoCarousel: React.FC = () => {
     video.addEventListener('loadedmetadata', updateSize);
     video.addEventListener('loadeddata', updateSize);
     video.addEventListener('canplay', updateSize);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
 
     return () => {
       video.removeEventListener('loadedmetadata', updateSize);
       video.removeEventListener('loadeddata', updateSize);
       video.removeEventListener('canplay', updateSize);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
     };
   }, [currentIndex]);
+
+  const handlePlayPause = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = touchStartY.current - touchEndY;
+
+    // Only handle horizontal swipes (more horizontal than vertical)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        // Swipe left - next video
+        handleNext();
+      } else {
+        // Swipe right - previous video
+        handlePrevious();
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % videos.length);
@@ -78,13 +144,15 @@ export const VideoCarousel: React.FC = () => {
           <div className="relative w-full bg-off-white flex items-center justify-center py-8">
             <div 
               ref={containerRef}
-              className="relative flex items-center justify-center"
+              className="relative flex items-center justify-center cursor-pointer"
               style={{ 
                 width: '100%',
                 maxWidth: aspectRatio && aspectRatio < 1 ? '400px' : '100%', // Constrain width for portrait videos
                 aspectRatio: aspectRatio ? `${aspectRatio}` : undefined,
                 maxHeight: '80vh'
               }}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
               <AnimatePresence mode="wait">
                 <motion.div
@@ -94,11 +162,11 @@ export const VideoCarousel: React.FC = () => {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   className="relative w-full h-full flex items-center justify-center"
+                  onClick={handlePlayPause}
                 >
                   <video
                     ref={videoRef}
                     src={videos[currentIndex]}
-                    controls
                     className="w-full h-auto max-h-[80vh]"
                     playsInline
                     preload="metadata"
@@ -111,51 +179,35 @@ export const VideoCarousel: React.FC = () => {
                   >
                     Your browser does not support the video tag.
                   </video>
+
+                  {/* Transparent Play Button Overlay */}
+                  {showPlayButton && (
+                    <motion.button
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlayPause();
+                      }}
+                      className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/5 transition-colors z-10"
+                      aria-label={isPlaying ? 'Pause video' : 'Play video'}
+                    >
+                      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
+                        {isPlaying ? (
+                          <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                      </div>
+                    </motion.button>
+                  )}
                 </motion.div>
               </AnimatePresence>
-
-              {/* Navigation arrows */}
-              {videos.length > 1 && (
-                <>
-                  <button
-                    onClick={handlePrevious}
-                    className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal hover:text-dark-gray transition-colors z-10 bg-white/80 rounded-full backdrop-blur-sm"
-                    aria-label="Previous video"
-                  >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                  </button>
-
-                  <button
-                    onClick={handleNext}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal hover:text-dark-gray transition-colors z-10 bg-white/80 rounded-full backdrop-blur-sm"
-                    aria-label="Next video"
-                  >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                  </button>
-                </>
-              )}
-
-              {/* Video indicator dots */}
-              {videos.length > 1 && (
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                  {videos.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentIndex
-                          ? 'bg-charcoal w-6'
-                          : 'bg-neutral-gray hover:bg-dark-gray'
-                      }`}
-                      aria-label={`Go to video ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </motion.div>
