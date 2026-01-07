@@ -78,9 +78,10 @@ export const VideoCarousel: React.FC = () => {
           <div className="relative w-full bg-off-white flex items-center justify-center py-8">
             <div 
               ref={containerRef}
-              className="relative inline-block max-w-full"
+              className="relative flex items-center justify-center"
               style={{ 
-                width: aspectRatio ? '100%' : 'auto',
+                width: '100%',
+                maxWidth: aspectRatio && aspectRatio < 1 ? '400px' : '100%', // Constrain width for portrait videos
                 aspectRatio: aspectRatio ? `${aspectRatio}` : undefined,
                 maxHeight: '80vh'
               }}
@@ -92,25 +93,20 @@ export const VideoCarousel: React.FC = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="relative"
-                  style={{
-                    width: aspectRatio ? '100%' : 'auto',
-                    height: aspectRatio ? 'auto' : 'auto',
-                    display: 'block'
-                  }}
+                  className="relative w-full h-full flex items-center justify-center"
                 >
                   <video
                     ref={videoRef}
                     src={videos[currentIndex]}
                     controls
-                    className="w-full h-auto max-w-full max-h-[80vh]"
+                    className="w-full h-auto max-h-[80vh]"
                     playsInline
                     preload="metadata"
                     style={{
                       display: 'block',
-                      width: aspectRatio ? '100%' : 'auto',
-                      height: aspectRatio ? 'auto' : 'auto',
-                      maxHeight: '80vh'
+                      maxWidth: '100%',
+                      maxHeight: '80vh',
+                      objectFit: 'contain'
                     }}
                   >
                     Your browser does not support the video tag.
