@@ -42,7 +42,7 @@ export const VideoCarousel: React.FC = () => {
           </h2>
 
           {/* Video Carousel */}
-          <div className="relative w-full aspect-video bg-off-white">
+          <div className="relative w-full min-h-[400px] bg-off-white flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -50,12 +50,12 @@ export const VideoCarousel: React.FC = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0"
+                className="w-full h-full max-w-full max-h-[80vh] flex items-center justify-center"
               >
                 <video
                   src={videos[currentIndex]}
                   controls
-                  className="w-full h-full object-contain"
+                  className="w-full h-full max-w-full max-h-[80vh] object-contain"
                   playsInline
                 >
                   Your browser does not support the video tag.

@@ -120,14 +120,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0"
                   >
-                    <LazyImage
-                      src={currentImage}
-                      alt={`${product.title} - Image ${currentImageIndex + 1}`}
-                      fill
-                      sizes="100vw"
-                      className="object-contain"
-                      unoptimized={true}
-                    />
+                    {currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4') ? (
+                      <video
+                        src={currentImage}
+                        controls
+                        className="w-full h-full object-contain"
+                        playsInline
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <LazyImage
+                        src={currentImage}
+                        alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                        fill
+                        sizes="100vw"
+                        className="object-contain"
+                        unoptimized={true}
+                      />
+                    )}
                   </motion.div>
                 </AnimatePresence>
 
