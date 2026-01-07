@@ -30,9 +30,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   // Get all available images (gallery + primary as fallback)
   const allImages = product.images.gallery && product.images.gallery.length > 0
     ? product.images.gallery
-    : [product.images.primary];
+    : product.images.primary ? [product.images.primary] : [];
   
   const currentImage = allImages[currentImageIndex];
+
+  // Early return if no images available
+  if (!currentImage) {
+    return null;
+  }
 
   const handleNextImage = () => {
     if (currentImageIndex < allImages.length - 1) {
@@ -87,6 +92,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  // Don't render if no image available
+  if (!currentImage || !isOpen) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
