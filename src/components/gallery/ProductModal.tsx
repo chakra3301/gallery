@@ -32,12 +32,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     ? product.images.gallery
     : product.images.primary ? [product.images.primary] : [];
   
-  const currentImage = allImages[currentImageIndex];
-
-  // Early return if no images available
-  if (!currentImage) {
-    return null;
-  }
+  // Ensure currentImageIndex is within bounds
+  const safeIndex = Math.min(currentImageIndex, Math.max(0, allImages.length - 1));
+  const currentImage = allImages[safeIndex] || allImages[0] || product.images.primary;
 
   const handleNextImage = () => {
     if (currentImageIndex < allImages.length - 1) {
@@ -93,14 +90,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     };
   }, [isOpen]);
 
-  // Don't render if no image available
-  if (!currentImage) {
+  // Don't render if no image available or modal is closed
+  if (!currentImage || !isOpen) {
     return null;
   }
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && currentImage && (
         <>
           {/* Backdrop */}
           <motion.div
@@ -130,7 +127,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     transition={{ duration: 0.3 }}
                     className="w-full h-full flex items-center justify-center p-6"
                   >
-                    {currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4') ? (
+                    {currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4')) ? (
                       <video
                         src={currentImage}
                         controls
