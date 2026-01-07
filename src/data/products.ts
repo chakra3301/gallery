@@ -1,8 +1,7 @@
 import { Product } from './types';
 
 /**
- * Sample product data with placeholders
- * Replace with real product data and images as available
+ * Product data
  */
 export const products: Product[] = [
   {
@@ -104,7 +103,7 @@ export const products: Product[] = [
   },
   {
     id: 'prod-005',
-    title: 'Starsys',
+    title: 'Star System 444',
     category: 'apparel',
     description:
       'A collection of t-shirts featuring the STARSYSTEM design. Streetwear pieces with bold graphics and urban aesthetics.',
@@ -134,91 +133,5 @@ export const products: Product[] = [
       colors: ['Black', 'White'],
     },
     tags: ['streetwear', 'starsystem', 'limited', 'graphic'],
-  },
-  {
-    id: 'prod-006',
-    title: 'Layered Overshirt',
-    category: 'apparel',
-    description:
-      'Double-layer construction with contrast stitching throughout. Oversized fit with cinch waist detail and extended sleeves.',
-    year: 2025,
-    images: {
-      primary: '/images/products/placeholder.jpg',
-      gallery: ['/images/products/placeholder.jpg'],
-    },
-    specs: {
-      materials: ['Japanese cotton twill', 'Corozo buttons'],
-      colors: ['Ash', 'Ink'],
-    },
-    tags: ['contemporary', 'oversized', 'crafted'],
-  },
-  {
-    id: 'prod-007',
-    title: 'Experimental Headwear',
-    category: 'experimental',
-    description:
-      'Sculptural headpiece exploring balance between function and form. Collapsible structure with memory wire frame.',
-    year: 2026,
-    images: {
-      primary: '/images/products/placeholder.jpg',
-    },
-    specs: {
-      materials: ['Shape-memory alloy', 'Technical mesh', '3D-printed joints'],
-      colors: ['Matte black'],
-    },
-    tags: ['conceptual', 'sculptural', 'limited'],
-  },
-  {
-    id: 'prod-008',
-    title: 'Geometric Pendant',
-    category: 'objects',
-    description:
-      'Precision-machined pendant with rotating elements. Minimal surface treatment to showcase material texture.',
-    year: 2025,
-    images: {
-      primary: '/images/products/placeholder.jpg',
-      gallery: ['/images/products/placeholder.jpg'],
-    },
-    specs: {
-      materials: ['Brushed titanium', 'Ceramic bearings'],
-      dimensions: '4cm × 4cm × 0.8cm',
-    },
-    tags: ['jewelry', 'minimal', 'precision'],
-  },
-  {
-    id: 'prod-009',
-    title: 'High-Top Technical Sneaker',
-    category: 'footwear',
-    description:
-      'Performance-inspired design with exaggerated sole geometry. Seamless upper construction with integrated lacing system.',
-    year: 2026,
-    images: {
-      primary: '/images/products/placeholder.jpg',
-    },
-    specs: {
-      materials: ['Knit textile', 'TPU cage', 'EVA midsole'],
-      colors: ['Triple white', 'Core black'],
-    },
-    tags: ['performance', 'futuristic', 'comfort'],
-  },
-  {
-    id: 'prod-010',
-    title: 'Archive Field Jacket',
-    category: 'apparel',
-    description:
-      'Refined take on military surplus silhouettes. Updated with contemporary fabrics and minimal branding.',
-    year: 2025,
-    images: {
-      primary: '/images/products/placeholder.jpg',
-      gallery: [
-        '/images/products/placeholder.jpg',
-        '/images/products/placeholder.jpg',
-      ],
-    },
-    specs: {
-      materials: ['Cotton sateen', 'Quilted lining', 'Matte hardware'],
-      colors: ['Olive drab', 'Stone'],
-    },
-    tags: ['heritage', 'military', 'timeless'],
   },
 ];
