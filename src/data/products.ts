@@ -121,8 +121,6 @@ export const products: Product[] = [
         '/images/products/star/IMG_9249.PNG',
         '/images/products/star/IMG_9250.PNG',
         '/images/products/star/IMG_9251.PNG',
-        '/images/products/star/starintro.MOV',
-        '/images/products/star/copy_ED4FCC3B-BBAE-4E95-8B30-2A09FDD211FE.mov',
         '/images/products/star/copy_FF10298E-4BC2-4111-BEA0-7A4374296FE2.MOV',
       ],
     },
