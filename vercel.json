@@ -1,4 +1,4 @@
 {
   "installCommand": "npm install",
-  "buildCommand": "git lfs install && git config lfs.url https://github.com/chakra3301/gallery.git/info/lfs && git lfs pull || echo 'LFS pull failed, continuing build' && npm run build"
+  "buildCommand": "git lfs install && (git remote get-url origin || git remote add origin https://github.com/chakra3301/gallery.git) && git lfs pull || echo 'Warning: Git LFS pull failed, some assets may be missing' && npm run build"
 }
