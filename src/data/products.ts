@@ -91,8 +91,8 @@ export const products: Product[] = [
         '/images/products/ark/IMG_7359.PNG',
         '/images/products/ark/IMG_8260.JPG',
         '/images/products/ark/IMG_8863.PNG',
-        '/images/products/ark/illusion.MOV',
-        '/images/products/ark/tokyo.MOV',
+        'https://pub-d46cec1a7737494f86461bc02a69b5bf.r2.dev/illusion.MOV',
+        'https://pub-d46cec1a7737494f86461bc02a69b5bf.r2.dev/tokyo.MOV',
       ],
     },
     specs: {
@@ -121,7 +121,8 @@ export const products: Product[] = [
         '/images/products/star/IMG_9249.PNG',
         '/images/products/star/IMG_9250.PNG',
         '/images/products/star/IMG_9251.PNG',
-        '/images/products/star/copy_FF10298E-4BC2-4111-BEA0-7A4374296FE2.MOV',
+        'https://pub-d46cec1a7737494f86461bc02a69b5bf.r2.dev/green.mov',
+        'https://pub-d46cec1a7737494f86461bc02a69b5bf.r2.dev/vanna.MOV',
       ],
     },
     specs: {
