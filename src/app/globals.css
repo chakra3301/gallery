@@ -13,39 +13,109 @@
 
   body {
     @apply bg-white text-charcoal antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Smooth scrolling */
+  /* Smooth scrolling with reduced motion support */
   html {
     scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar - minimal */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Custom scrollbar - refined minimal */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-off-white;
+    @apply bg-transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-neutral-gray rounded-full;
+    @apply bg-neutral-gray/50 rounded-full;
+    transition: background-color 0.2s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-medium-gray;
+    @apply bg-medium-gray/70;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212, 212, 212, 0.5) transparent;
+  }
+
+  /* Selection styling */
+  ::selection {
+    @apply bg-charcoal/10 text-charcoal;
   }
 }
 
 @layer components {
+  /* Refined card hover effect */
   .card-hover {
-    @apply transition-all duration-300 hover:scale-[1.01] hover:shadow-soft;
+    @apply transition-all duration-400 ease-out-quart;
+  }
+
+  .card-hover:hover {
+    @apply shadow-soft;
+    transform: translateY(-2px);
+  }
+
+  /* Focus visible styles for accessibility */
+  .focus-ring {
+    @apply outline-none;
+  }
+
+  .focus-ring:focus-visible {
+    @apply ring-2 ring-charcoal/20 ring-offset-2 ring-offset-white;
+  }
+
+  /* Image container with aspect ratio */
+  .image-container {
+    @apply relative overflow-hidden bg-off-white;
+  }
+
+  /* Subtle divider line */
+  .divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-neutral-gray/40 to-transparent;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Fade mask for scroll areas */
+  .fade-mask-b {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  .fade-mask-t {
+    mask-image: linear-gradient(to top, black 80%, transparent 100%);
+  }
+
+  /* GPU acceleration for smoother animations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
   }
 }

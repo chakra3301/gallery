@@ -2,29 +2,37 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { fadeInVariant } from '@/lib/constants';
+import { fadeInUpVariant, customEasing } from '@/lib/constants';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="py-24 px-6 bg-off-white">
-      <div className="max-w-4xl mx-auto">
+    <section id="about" className="py-24 md:py-32 lg:py-40 px-6 md:px-8 lg:px-12 bg-off-white">
+      <div className="max-w-3xl mx-auto">
         <motion.div
-          variants={fadeInVariant}
+          variants={fadeInUpVariant}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="space-y-8"
+          viewport={{ once: true, margin: '-80px' }}
+          className="space-y-12"
         >
-          {/* Title */}
-          <h2
-            className="text-3xl md:text-4xl font-normal text-charcoal mb-12"
-            style={{ fontFamily: 'var(--font-geist-mono)' }}
+          {/* Section label */}
+          <motion.span
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: customEasing.easeOutQuart }}
+            className="font-mono text-xs text-medium-gray tracking-widest uppercase block"
           >
+            About
+          </motion.span>
+
+          {/* Title */}
+          <h2 className="font-mono text-3xl md:text-4xl lg:text-5xl font-normal text-charcoal tracking-tight">
             Studio
           </h2>
 
           {/* Content */}
-          <div className="space-y-6 text-base md:text-lg text-charcoal leading-relaxed leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg text-dark-gray leading-relaxed">
             <p>
               This is a collection of physical design work—objects and garments
               created with intention, exploring the relationship between form,
@@ -43,9 +51,24 @@ export const About: React.FC = () => {
               create objects that are both beautiful and useful.
             </p>
           </div>
+
+          {/* Divider */}
+          <div className="divider" />
+
+          {/* Contact prompt */}
+          <div className="pt-4">
+            <p className="text-sm text-medium-gray">
+              For inquiries and collaborations
+            </p>
+            <a
+              href="mailto:luca47hall@gmail.com"
+              className="font-mono text-sm text-charcoal hover:text-dark-gray transition-colors duration-300 mt-2 inline-block focus-ring rounded"
+            >
+              luca47hall@gmail.com
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
   );
 };
-

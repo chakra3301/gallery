@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/data/types';
 import { LazyImage } from '../ui/LazyImage';
+import { customEasing, imageCrossfadeVariant } from '@/lib/constants';
 
 interface ProductModalProps {
   product: Product;
@@ -27,10 +28,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const allImages = product.images.gallery && product.images.gallery.length > 0
     ? product.images.gallery
     : product.images.primary ? [product.images.primary] : [];
-  
+
   // Ensure currentImageIndex is within bounds
   const safeIndex = Math.min(currentImageIndex, Math.max(0, allImages.length - 1));
   const currentImage = allImages[safeIndex] || allImages[0] || product.images.primary;
+
+  // Check if current media is a video
+  const isVideo = currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4'));
 
   // Reset image index when product changes
   useEffect(() => {
@@ -39,18 +43,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
   // Handle video autoplay and volume when video changes
   useEffect(() => {
-    if (videoRef.current && currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4'))) {
+    if (videoRef.current && isVideo) {
       const video = videoRef.current;
       video.volume = 0.5;
-      video.currentTime = 0; // Reset to start
-      video.play().catch((error) => {
-        console.log('Autoplay prevented:', error);
-      });
+      video.currentTime = 0;
+      video.play().catch(() => {});
     } else if (videoRef.current) {
-      // Pause video if switching to an image
       videoRef.current.pause();
     }
-  }, [currentImage]);
+  }, [currentImage, isVideo]);
 
   // Pause video when modal closes
   useEffect(() => {
@@ -59,21 +60,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleNextImage = () => {
+  const handleNextImage = useCallback(() => {
     if (currentImageIndex < allImages.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     } else {
-      onNext(); // Move to next product if at last image
+      onNext();
     }
-  };
+  }, [currentImageIndex, allImages.length, onNext]);
 
-  const handlePreviousImage = () => {
+  const handlePreviousImage = useCallback(() => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     } else {
-      onPrevious(); // Move to previous product if at first image
+      onPrevious();
     }
-  };
+  }, [currentImageIndex, onPrevious]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -83,23 +84,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowRight') {
-        if (currentImageIndex < allImages.length - 1) {
-          setCurrentImageIndex(currentImageIndex + 1);
-        } else {
-          onNext();
-        }
+        handleNextImage();
       } else if (e.key === 'ArrowLeft') {
-        if (currentImageIndex > 0) {
-          setCurrentImageIndex(currentImageIndex - 1);
-        } else {
-          onPrevious();
-        }
+        handlePreviousImage();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, onNext, onPrevious, currentImageIndex, allImages.length]);
+  }, [isOpen, onClose, handleNextImage, handlePreviousImage]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -113,7 +106,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     };
   }, [isOpen]);
 
-  // Don't render if no image available or modal is closed
   if (!currentImage || !isOpen) {
     return null;
   }
@@ -127,47 +119,44 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: customEasing.easeOutQuart }}
             onClick={onClose}
-            className="fixed inset-0 bg-white/95 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-white/98 backdrop-blur-sm z-50"
           />
 
-          {/* Fullscreen modal */}
+          {/* Modal content */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-6"
+            transition={{ duration: 0.35, ease: customEasing.easeOutQuart }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 lg:p-8"
           >
-            <div className="w-full h-full max-w-7xl mx-auto flex flex-col lg:flex-row bg-white">
-              {/* Image Section - Fullscreen */}
+            <div className="w-full h-full max-w-[1600px] mx-auto flex flex-col lg:flex-row bg-white">
+              {/* Image Section */}
               <div className="relative flex-1 bg-off-white flex items-center justify-center overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentImage}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full h-full flex items-center justify-center p-6"
+                    variants={imageCrossfadeVariant}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="w-full h-full flex items-center justify-center p-6 md:p-8 lg:p-12"
                   >
-                    {currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4')) ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <video
-                          ref={videoRef}
-                          src={currentImage}
-                          autoPlay
-                          className="max-w-full max-h-full object-contain"
-                          style={{
-                            transform: currentImage.includes('starintro.MOV') ? 'rotate(-90deg)' : 'none',
-                            width: 'auto',
-                            height: 'auto'
-                          }}
-                          playsInline
-                          muted={false}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      </div>
+                    {isVideo ? (
+                      <video
+                        ref={videoRef}
+                        src={currentImage}
+                        autoPlay
+                        loop
+                        playsInline
+                        muted={false}
+                        className="max-w-full max-h-full object-contain"
+                        style={{
+                          transform: currentImage.includes('starintro.MOV') ? 'rotate(-90deg)' : 'none',
+                        }}
+                      />
                     ) : (
                       <LazyImage
                         src={currentImage}
@@ -176,10 +165,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         height={2000}
                         sizes="100vw"
                         className="max-w-full max-h-full object-contain"
-                        style={{
-                          width: 'auto',
-                          height: 'auto'
-                        }}
+                        style={{ width: 'auto', height: 'auto' }}
                         unoptimized={true}
                       />
                     )}
@@ -188,15 +174,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
                 {/* Image indicator dots */}
                 {allImages.length > 1 && (
-                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
                     {allImages.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`w-2 h-2 rounded-full transition-all ${
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
                           index === currentImageIndex
                             ? 'bg-charcoal w-6'
-                            : 'bg-neutral-gray hover:bg-dark-gray'
+                            : 'bg-neutral-gray/60 hover:bg-medium-gray w-1.5'
                         }`}
                         aria-label={`Go to image ${index + 1}`}
                       />
@@ -204,16 +190,16 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                 )}
 
-                {/* Navigation arrows - minimal */}
+                {/* Navigation arrows */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePreviousImage();
                   }}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal hover:text-dark-gray transition-colors z-10"
-                  aria-label={currentImageIndex > 0 ? "Previous image" : "Previous product"}
+                  className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal/60 hover:text-charcoal transition-colors duration-200 z-10 focus-ring rounded-full"
+                  aria-label={currentImageIndex > 0 ? 'Previous image' : 'Previous product'}
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                   </svg>
                 </button>
@@ -223,18 +209,18 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     e.stopPropagation();
                     handleNextImage();
                   }}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal hover:text-dark-gray transition-colors z-10"
-                  aria-label={currentImageIndex < allImages.length - 1 ? "Next image" : "Next product"}
+                  className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-charcoal/60 hover:text-charcoal transition-colors duration-200 z-10 focus-ring rounded-full"
+                  aria-label={currentImageIndex < allImages.length - 1 ? 'Next image' : 'Next product'}
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                   </svg>
                 </button>
 
-                {/* Close button - top right */}
+                {/* Close button */}
                 <button
                   onClick={onClose}
-                  className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-charcoal hover:text-dark-gray transition-colors"
+                  className="absolute top-4 md:top-6 right-4 md:right-6 w-10 h-10 flex items-center justify-center text-charcoal/60 hover:text-charcoal transition-colors duration-200 focus-ring rounded-full"
                   aria-label="Close modal"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -243,30 +229,34 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </button>
               </div>
 
-              {/* Text Panel - Side */}
-              <div className="w-full lg:w-96 p-8 lg:p-12 flex flex-col bg-white border-l border-neutral-gray/20">
+              {/* Text Panel */}
+              <div className="w-full lg:w-[380px] xl:w-[420px] p-6 md:p-8 lg:p-10 flex flex-col bg-white lg:border-l border-neutral-gray/15">
+                {/* Category */}
+                <span className="font-mono text-xs text-medium-gray tracking-wider uppercase mb-4">
+                  {product.category}
+                </span>
+
                 {/* Title */}
-                <h2
-                  className="text-3xl md:text-4xl font-normal text-charcoal mb-2"
-                  style={{ fontFamily: 'var(--font-geist-mono)' }}
-                >
+                <h2 className="font-mono text-2xl md:text-3xl font-normal text-charcoal tracking-tight mb-2">
                   {product.title}
                 </h2>
 
                 {/* Year */}
-                <p className="text-sm text-dark-gray mb-8">{product.year}</p>
+                <p className="font-mono text-sm text-medium-gray mb-8">
+                  {product.year}
+                </p>
 
                 {/* Description */}
-                <p className="text-base text-charcoal leading-relaxed mb-8 flex-1">
+                <p className="text-base text-dark-gray leading-relaxed mb-8 flex-1">
                   {product.description}
                 </p>
 
                 {/* Specifications */}
                 {product.specs && (
-                  <div className="mb-8 space-y-6">
+                  <div className="space-y-5 mb-8">
                     {product.specs.materials && (
                       <div>
-                        <p className="text-xs text-dark-gray uppercase tracking-wider mb-2">
+                        <p className="font-mono text-xs text-medium-gray tracking-wider uppercase mb-1.5">
                           Materials
                         </p>
                         <p className="text-sm text-charcoal">{product.specs.materials.join(', ')}</p>
@@ -275,7 +265,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
                     {product.specs.dimensions && (
                       <div>
-                        <p className="text-xs text-dark-gray uppercase tracking-wider mb-2">
+                        <p className="font-mono text-xs text-medium-gray tracking-wider uppercase mb-1.5">
                           Dimensions
                         </p>
                         <p className="text-sm text-charcoal">{product.specs.dimensions}</p>
@@ -284,7 +274,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
                     {product.specs.colors && (
                       <div>
-                        <p className="text-xs text-dark-gray uppercase tracking-wider mb-2">
+                        <p className="font-mono text-xs text-medium-gray tracking-wider uppercase mb-1.5">
                           Colors
                         </p>
                         <p className="text-sm text-charcoal">{product.specs.colors.join(', ')}</p>
@@ -293,10 +283,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                 )}
 
-                {/* Minimal keyboard hint */}
-                <div className="pt-6 border-t border-neutral-gray/20">
-                  <p className="text-xs text-dark-gray text-center">
-                    ← → navigate • ESC close
+                {/* Keyboard hint */}
+                <div className="pt-6 border-t border-neutral-gray/15">
+                  <p className="font-mono text-xs text-medium-gray/80 text-center tracking-wide">
+                    <span className="inline-block px-1.5 py-0.5 bg-light-gray rounded text-[10px]">←</span>
+                    <span className="inline-block px-1.5 py-0.5 bg-light-gray rounded text-[10px] mx-1">→</span>
+                    <span className="ml-1">navigate</span>
+                    <span className="mx-3 text-neutral-gray">·</span>
+                    <span className="inline-block px-1.5 py-0.5 bg-light-gray rounded text-[10px]">esc</span>
+                    <span className="ml-1">close</span>
                   </p>
                 </div>
               </div>
