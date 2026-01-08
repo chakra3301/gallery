@@ -19,6 +19,11 @@ export const metadata: Metadata = {
   description: 'A minimalist gallery of physical design work—exploring the relationship between form, material, and function.',
   keywords: ['design', 'fashion', 'physical products', 'archive', 'collection', 'industrial', 'minimal'],
   authors: [{ name: 'Archive' }],
+  icons: {
+    icon: '/images/gfavi.png',
+    shortcut: '/images/gfavi.png',
+    apple: '/images/gfavi.png',
+  },
   openGraph: {
     title: 'Archive - Original objects in original space',
     description: 'A minimalist gallery of physical design work—exploring the relationship between form, material, and function.',
