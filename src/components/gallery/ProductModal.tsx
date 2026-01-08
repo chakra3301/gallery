@@ -23,6 +23,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Get all available images (gallery + primary as fallback)
+  const allImages = product.images.gallery && product.images.gallery.length > 0
+    ? product.images.gallery
+    : product.images.primary ? [product.images.primary] : [];
+  
+  // Ensure currentImageIndex is within bounds
+  const safeIndex = Math.min(currentImageIndex, Math.max(0, allImages.length - 1));
+  const currentImage = allImages[safeIndex] || allImages[0] || product.images.primary;
+
   // Reset image index when product changes
   useEffect(() => {
     setCurrentImageIndex(0);
@@ -49,15 +58,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       videoRef.current.pause();
     }
   }, [isOpen]);
-
-  // Get all available images (gallery + primary as fallback)
-  const allImages = product.images.gallery && product.images.gallery.length > 0
-    ? product.images.gallery
-    : product.images.primary ? [product.images.primary] : [];
-  
-  // Ensure currentImageIndex is within bounds
-  const safeIndex = Math.min(currentImageIndex, Math.max(0, allImages.length - 1));
-  const currentImage = allImages[safeIndex] || allImages[0] || product.images.primary;
 
   const handleNextImage = () => {
     if (currentImageIndex < allImages.length - 1) {
