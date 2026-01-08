@@ -128,14 +128,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     className="w-full h-full flex items-center justify-center p-6"
                   >
                     {currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4')) ? (
-                      <video
-                        src={currentImage}
-                        controls
-                        className="max-w-full max-h-full w-auto h-auto object-contain"
-                        playsInline
-                      >
-                        Your browser does not support the video tag.
-                      </video>
+                      <div className="w-full h-full flex items-center justify-center">
+                        <video
+                          src={currentImage}
+                          controls
+                          className="max-w-full max-h-full object-contain"
+                          style={{
+                            transform: currentImage.includes('starintro.MOV') ? 'rotate(-90deg)' : 'none',
+                            width: 'auto',
+                            height: 'auto'
+                          }}
+                          playsInline
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
                     ) : (
                       <LazyImage
                         src={currentImage}
@@ -143,7 +150,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                         width={2000}
                         height={2000}
                         sizes="100vw"
-                        className="max-w-full max-h-full w-auto h-auto object-contain"
+                        className="max-w-full max-h-full object-contain"
+                        style={{
+                          width: 'auto',
+                          height: 'auto'
+                        }}
                         unoptimized={true}
                       />
                     )}
