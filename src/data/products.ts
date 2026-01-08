@@ -91,6 +91,8 @@ export const products: Product[] = [
         '/images/products/ark/IMG_7359.PNG',
         '/images/products/ark/IMG_8260.JPG',
         '/images/products/ark/IMG_8863.PNG',
+        '/images/products/ark/illusion.MOV',
+        '/images/products/ark/tokyo.MOV',
       ],
     },
     specs: {

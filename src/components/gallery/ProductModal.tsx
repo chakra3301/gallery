@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/data/types';
 import { LazyImage } from '../ui/LazyImage';
@@ -21,11 +21,34 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   onPrevious,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Reset image index when product changes
   useEffect(() => {
     setCurrentImageIndex(0);
   }, [product.id]);
+
+  // Handle video autoplay and volume when video changes
+  useEffect(() => {
+    if (videoRef.current && currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4'))) {
+      const video = videoRef.current;
+      video.volume = 0.5;
+      video.currentTime = 0; // Reset to start
+      video.play().catch((error) => {
+        console.log('Autoplay prevented:', error);
+      });
+    } else if (videoRef.current) {
+      // Pause video if switching to an image
+      videoRef.current.pause();
+    }
+  }, [currentImage]);
+
+  // Pause video when modal closes
+  useEffect(() => {
+    if (!isOpen && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, [isOpen]);
 
   // Get all available images (gallery + primary as fallback)
   const allImages = product.images.gallery && product.images.gallery.length > 0
@@ -130,8 +153,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     {currentImage && (currentImage.toLowerCase().endsWith('.mov') || currentImage.toLowerCase().endsWith('.mp4')) ? (
                       <div className="w-full h-full flex items-center justify-center">
                         <video
+                          ref={videoRef}
                           src={currentImage}
-                          controls
+                          autoPlay
                           className="max-w-full max-h-full object-contain"
                           style={{
                             transform: currentImage.includes('starintro.MOV') ? 'rotate(-90deg)' : 'none',
@@ -139,6 +163,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                             height: 'auto'
                           }}
                           playsInline
+                          muted={false}
                         >
                           Your browser does not support the video tag.
                         </video>
