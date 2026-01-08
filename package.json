@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "git lfs install && git lfs pull || true"
+    "postinstall": "git lfs install || true"
   },
   "dependencies": {
     "next": "^15.1.4",
